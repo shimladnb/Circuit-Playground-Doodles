@@ -43,7 +43,7 @@ void loop()
   float currentValX = X;
   float deltaX = currentValX - oldValX;
   oldValX = currentValX;
-  smoothDeltaX.add(deltaX);
+  smoothDeltaX.add(abs(deltaX));
   deltaX = smoothDeltaX.get();
 //  Serial.print(deltaX);
 
@@ -52,7 +52,7 @@ void loop()
   float currentValY = Y;
   float deltaY = currentValY - oldValY;
   oldValY = currentValY;
-  smoothDeltaY.add(deltaY);
+  smoothDeltaY.add(abs(deltaY));
   deltaY = smoothDeltaY.get();
 //  Serial.print(deltaY);
 
@@ -61,7 +61,7 @@ void loop()
   float currentValZ = Z;
   float deltaZ = currentValZ - oldValZ;
   oldValZ = currentValZ;
-  smoothDeltaZ.add(deltaZ);
+  smoothDeltaZ.add(abs(deltaZ));
   deltaZ = smoothDeltaZ.get();
 //  Serial.println(deltaZ);
 

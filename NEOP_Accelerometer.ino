@@ -7,13 +7,15 @@
 float X, Y, Z;
 int counter;
 float sine;
+float oldValX, oldValY, oldValZ;
+float deltaX, deltaY, deltaZ;
+
+// CONTROL PARAMS
 int smoothAmt = 20;
 int ledBrightness = 255;
 int ledBrightnessOffset = 10;
-float oldValX, oldValY, oldValZ;
-float deltaX, deltaY, deltaZ;
 int initialHue = 100;
-int motionOffsetHue = 100;
+int motionOffsetHue = 150;
 
 Smoothed <float> smoothyX, smoothyY, smoothyZ, smoothDeltaX, smoothDeltaY, smoothDeltaZ, smoothMotion;
 

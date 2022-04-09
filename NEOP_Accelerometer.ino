@@ -8,6 +8,7 @@ float sine;
 int smoothAmt = 20;
 int ledBrightness = 25;
 float oldValX, oldValY, oldValZ;
+float deltaX, deltaY, deltaZ;
 
 Smoothed <float> smoothyX, smoothyY, smoothyZ, smoothDeltaX, smoothDeltaY, smoothDeltaZ, smoothMotion;
 
@@ -25,14 +26,14 @@ void setup()
   smoothDeltaZ.begin(SMOOTHED_AVERAGE, smoothAmt);
 
   smoothMotion.begin(SMOOTHED_AVERAGE, smoothAmt);
-  
+
   CircuitPlayground.setBrightness(ledBrightness);
 }
 
 void loop()
 {
   prepAccels(false);
-  pulseBrightness(0.1);
+//  pulseBrightness(0.1);
   setBrightnessWithButton(false);
 
   for (int i = 0; i < 10; i++)
@@ -40,35 +41,15 @@ void loop()
     CircuitPlayground.setPixelColor(i, X, 0, Z);
   }
 
-  float currentValX = X;
-  float deltaX = currentValX - oldValX;
-  oldValX = currentValX;
-  smoothDeltaX.add(abs(deltaX));
-  deltaX = smoothDeltaX.get();
-//  Serial.print(deltaX);
-
-//  Serial.print(' ');
-
-  float currentValY = Y;
-  float deltaY = currentValY - oldValY;
-  oldValY = currentValY;
-  smoothDeltaY.add(abs(deltaY));
-  deltaY = smoothDeltaY.get();
-//  Serial.print(deltaY);
-
-//  Serial.print(' ');
-
-  float currentValZ = Z;
-  float deltaZ = currentValZ - oldValZ;
-  oldValZ = currentValZ;
-  smoothDeltaZ.add(abs(deltaZ));
-  deltaZ = smoothDeltaZ.get();
-//  Serial.println(deltaZ);
+  calculateDeltaVector();
 
   float generalMotion = abs(deltaX + deltaY + deltaZ);
   smoothMotion.add(generalMotion);
   generalMotion = smoothMotion.get();
+  generalMotion /= 32.0;
+  generalMotion = pow(generalMotion, 2);
   Serial.println(generalMotion);
+  CircuitPlayground.setBrightness(ledBrightness * generalMotion);
 
   delay(10);
 }
@@ -121,14 +102,28 @@ void setBrightnessWithButton(bool printShit)
     ledBrightness = moduloLedBrightness(ledBrightness);
     CircuitPlayground.setBrightness(ledBrightness);
   }
-  
+
   if (printShit)
     Serial.println(ledBrightness);
 }
 
+void calculateDeltaVector()
+{
+  float currentValX = X;
+  deltaX = currentValX - oldValX;
+  oldValX = currentValX;
+  smoothDeltaX.add(abs(deltaX));
+  deltaX = smoothDeltaX.get();
 
-//  calculating delta
-//   oldTime = currentTime;
-//   currentTime = millis();
-//   deltaTime = currentTime - oldTime;
-//
+  float currentValY = Y;
+  deltaY = currentValY - oldValY;
+  oldValY = currentValY;
+  smoothDeltaY.add(abs(deltaY));
+  deltaY = smoothDeltaY.get();
+
+  float currentValZ = Z;
+  deltaZ = currentValZ - oldValZ;
+  oldValZ = currentValZ;
+  smoothDeltaZ.add(abs(deltaZ));
+  deltaZ = smoothDeltaZ.get();
+}

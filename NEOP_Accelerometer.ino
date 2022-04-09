@@ -19,7 +19,7 @@ int initialHue = 100;
 int motionOffsetHue = 40;
 
 Smoothed <float> smoothyX, smoothyY, smoothyZ, smoothDeltaX, smoothDeltaY, smoothDeltaZ, smoothMotion;
-
+ 
 void setup()
 {
   Serial.begin(9600);

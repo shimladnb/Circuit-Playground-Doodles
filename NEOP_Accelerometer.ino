@@ -9,9 +9,11 @@ int counter;
 float sine;
 int smoothAmt = 20;
 int ledBrightness = 255;
+int ledBrightnessOffset = 10;
 float oldValX, oldValY, oldValZ;
 float deltaX, deltaY, deltaZ;
-int initialHue = 80;
+int initialHue = 100;
+int motionOffsetHue = 100;
 
 Smoothed <float> smoothyX, smoothyY, smoothyZ, smoothDeltaX, smoothDeltaY, smoothDeltaZ, smoothMotion;
 
@@ -45,13 +47,13 @@ void loop()
   generalMotion /= 32.0;
   generalMotion = pow(generalMotion, 2);
   Serial.println(generalMotion * 100);
-  CircuitPlayground.setBrightness(ledBrightness * generalMotion);
+  CircuitPlayground.setBrightness(constrain(ledBrightness * generalMotion + ledBrightnessOffset, 0, 255));
 
   for (int i = 0; i < 10; i++)
   {
     static uint8_t hue;
     hue = hue + 1;
-    setColorToPixel(i, CHSV(initialHue + (generalMotion * 100), 255, 255));
+    setColorToPixel(i, CHSV(initialHue + (generalMotion * motionOffsetHue), 255, 255));
   }
 
   delay(10);

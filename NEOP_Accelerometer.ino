@@ -9,6 +9,7 @@ int counter;
 float sine;
 float oldValX, oldValY, oldValZ;
 float deltaX, deltaY, deltaZ;
+static uint8_t currentHue;
 
 // CONTROL PARAMS
 int smoothAmt = 20;

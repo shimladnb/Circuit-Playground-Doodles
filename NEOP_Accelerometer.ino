@@ -7,10 +7,9 @@ int counter;
 float sine;
 int smoothAmt = 20;
 int ledBrightness = 25;
+float oldValX, oldValY, oldValZ;
 
-Smoothed <float> smoothyX;
-Smoothed <float> smoothyY;
-Smoothed <float> smoothyZ;
+Smoothed <float> smoothyX, smoothyY, smoothyZ, smoothDeltaX, smoothDeltaY, smoothDeltaZ, smoothMotion;
 
 void setup()
 {
@@ -20,6 +19,13 @@ void setup()
   smoothyX.begin(SMOOTHED_AVERAGE, smoothAmt);
   smoothyY.begin(SMOOTHED_AVERAGE, smoothAmt);
   smoothyZ.begin(SMOOTHED_AVERAGE, smoothAmt);
+
+  smoothDeltaX.begin(SMOOTHED_AVERAGE, smoothAmt);
+  smoothDeltaY.begin(SMOOTHED_AVERAGE, smoothAmt);
+  smoothDeltaZ.begin(SMOOTHED_AVERAGE, smoothAmt);
+
+  smoothMotion.begin(SMOOTHED_AVERAGE, smoothAmt);
+  
   CircuitPlayground.setBrightness(ledBrightness);
 }
 
@@ -27,12 +33,42 @@ void loop()
 {
   prepAccels(false);
   pulseBrightness(0.1);
-  setBrightnessWithButton();
+  setBrightnessWithButton(false);
 
   for (int i = 0; i < 10; i++)
   {
     CircuitPlayground.setPixelColor(i, X, 0, Z);
   }
+
+  float currentValX = X;
+  float deltaX = currentValX - oldValX;
+  oldValX = currentValX;
+  smoothDeltaX.add(deltaX);
+  deltaX = smoothDeltaX.get();
+//  Serial.print(deltaX);
+
+//  Serial.print(' ');
+
+  float currentValY = Y;
+  float deltaY = currentValY - oldValY;
+  oldValY = currentValY;
+  smoothDeltaY.add(deltaY);
+  deltaY = smoothDeltaY.get();
+//  Serial.print(deltaY);
+
+//  Serial.print(' ');
+
+  float currentValZ = Z;
+  float deltaZ = currentValZ - oldValZ;
+  oldValZ = currentValZ;
+  smoothDeltaZ.add(deltaZ);
+  deltaZ = smoothDeltaZ.get();
+//  Serial.println(deltaZ);
+
+  float generalMotion = abs(deltaX + deltaY + deltaZ);
+  smoothMotion.add(generalMotion);
+  generalMotion = smoothMotion.get();
+  Serial.println(generalMotion);
 
   delay(10);
 }
@@ -78,20 +114,16 @@ int moduloLedBrightness(int currentBrightness)
   return currentBrightness;
 }
 
-void setBrightnessWithButton()
+void setBrightnessWithButton(bool printShit)
 {
   if (CircuitPlayground.leftButton())
   {
     ledBrightness = moduloLedBrightness(ledBrightness);
     CircuitPlayground.setBrightness(ledBrightness);
   }
-
-  Serial.println(ledBrightness);
-}
-
-float calculateDelta(float inputFloat)
-{
-
+  
+  if (printShit)
+    Serial.println(ledBrightness);
 }
 
 

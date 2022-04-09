@@ -1,12 +1,13 @@
 #include <Adafruit_CircuitPlayground.h>
 // http://ermahgerd.info/Adafruit_CircuitPlayground/
 #include <Smoothed.h>
+#include <FastLED.h>
 
 float X, Y, Z;
 int counter;
 float sine;
 int smoothAmt = 20;
-int ledBrightness = 25;
+int ledBrightness = 255;
 float oldValX, oldValY, oldValZ;
 float deltaX, deltaY, deltaZ;
 
@@ -33,22 +34,24 @@ void setup()
 void loop()
 {
   prepAccels(false);
-//  pulseBrightness(0.1);
   setBrightnessWithButton(false);
 
   for (int i = 0; i < 10; i++)
   {
-    CircuitPlayground.setPixelColor(i, X, 0, Z);
+    static uint8_t hue;
+    hue = hue + 1;
+    setColorToPixel(i, CHSV( hue, 255, 255));
+    
   }
 
   calculateDeltaVector();
-
+  
   float generalMotion = abs(deltaX + deltaY + deltaZ);
   smoothMotion.add(generalMotion);
   generalMotion = smoothMotion.get();
   generalMotion /= 32.0;
   generalMotion = pow(generalMotion, 2);
-  Serial.println(generalMotion);
+  Serial.println(generalMotion*100);
   CircuitPlayground.setBrightness(ledBrightness * generalMotion);
 
   delay(10);
@@ -126,4 +129,9 @@ void calculateDeltaVector()
   oldValZ = currentValZ;
   smoothDeltaZ.add(abs(deltaZ));
   deltaZ = smoothDeltaZ.get();
+}
+
+void setColorToPixel(int pixel, const CRGB& rgb)
+{
+  CircuitPlayground.setPixelColor(pixel, rgb.r, rgb.b, rgb.g);
 }

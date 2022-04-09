@@ -12,11 +12,11 @@ float deltaX, deltaY, deltaZ;
 static uint8_t currentHue;
 
 // CONTROL PARAMS
-int smoothAmt = 20;
+int smoothAmt = 15;
 int ledBrightness = 255;
 int ledBrightnessOffset = 10;
 int initialHue = 100;
-int motionOffsetHue = 150;
+int motionOffsetHue = 255;
 
 Smoothed <float> smoothyX, smoothyY, smoothyZ, smoothDeltaX, smoothDeltaY, smoothDeltaZ, smoothMotion;
 
@@ -31,7 +31,7 @@ void setup()
 void loop()
 {
   prepAccels(false);
-  setBrightnessWithButton(false);
+//  setBrightnessWithButton(false);
   calculateDeltaVector();
 
   float generalMotion = abs(deltaX + deltaY + deltaZ);
@@ -44,9 +44,9 @@ void loop()
 
   for (int i = 0; i < 10; i++)
   {
-    static uint8_t hue;
-    hue = hue + 1;
-    setColorToPixel(i, CHSV(initialHue + (generalMotion * motionOffsetHue), 255, 255));
+    currentHue = initialHue + (generalMotion * motionOffsetHue);
+    currentHue %= 255;
+    setColorToPixel(i, CHSV(currentHue, 255, 255));
   }
 
   delay(10);

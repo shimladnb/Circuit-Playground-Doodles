@@ -10,6 +10,8 @@ float sine;
 float oldValX, oldValY, oldValZ;
 float deltaX, deltaY, deltaZ;
 static uint8_t currentHue;
+double timeLine;
+float timeSpeed = 2000.f;
 
 // CONTROL PARAMS
 int smoothAmt = 15;
@@ -17,6 +19,8 @@ int ledBrightness = 255;
 int ledBrightnessOffset = 10;
 int initialHue = 100;
 int motionOffsetHue = 40;
+float timeLineMinutes = 2.f;
+
 
 Smoothed <float> smoothyX, smoothyY, smoothyZ, smoothDeltaX, smoothDeltaY, smoothDeltaZ, smoothMotion;
  
@@ -30,6 +34,12 @@ void setup()
 
 void loop()
 {
+//  timeSpeed = timeSpeed * timeLineMinutes;
+  counter++;
+  int timeSpeedInt = timeSpeed;
+  counter = counter %  timeSpeedInt;
+  timeLine = counter / timeSpeed;
+  Serial.println(timeLine);
   prepAccels(false);
 //  setBrightnessWithButton(false);
   calculateDeltaVector();
@@ -39,7 +49,7 @@ void loop()
   generalMotion = smoothMotion.get();
   generalMotion /= 32.0;
   generalMotion = pow(generalMotion, 2);
-  Serial.println(generalMotion * 100);
+//  Serial.println(generalMotion * 100);
   CircuitPlayground.setBrightness(constrain(ledBrightness * generalMotion + ledBrightnessOffset, 0, 255));
 
   for (int i = 0; i < 10; i++)
@@ -49,5 +59,5 @@ void loop()
     setColorToPixel(i, CHSV(currentHue, 255, 255));
   }
 
-  delay(10);
+  delay(17);
 }

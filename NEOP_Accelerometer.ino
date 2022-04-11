@@ -5,13 +5,13 @@
 // https://github.com/FastLED/FastLED/wiki/Pixel-reference#chsv
 
 float X, Y, Z;
-int counter;
 float sine;
 float oldValX, oldValY, oldValZ;
 float deltaX, deltaY, deltaZ;
 static uint8_t currentHue;
+int counter;
 double timeLine;
-float timeSpeed = 2000.f;
+float timeSpeed = 2080.f;
 
 // CONTROL PARAMS
 int smoothAmt = 15;
@@ -19,7 +19,8 @@ int ledBrightness = 255;
 int ledBrightnessOffset = 10;
 int initialHue = 100;
 int motionOffsetHue = 40;
-float timeLineMinutes = 2.f;
+float timeLineMinutes = 1.f;
+float timeLineMult = timeSpeed * timeLineMinutes;
 
 
 Smoothed <float> smoothyX, smoothyY, smoothyZ, smoothDeltaX, smoothDeltaY, smoothDeltaZ, smoothMotion;
@@ -36,9 +37,9 @@ void loop()
 {
 //  timeSpeed = timeSpeed * timeLineMinutes;
   counter++;
-  int timeSpeedInt = timeSpeed;
+  int timeSpeedInt = timeLineMult;
   counter = counter %  timeSpeedInt;
-  timeLine = counter / timeSpeed;
+  timeLine = counter / timeLineMult;
   Serial.println(timeLine);
   prepAccels(false);
 //  setBrightnessWithButton(false);

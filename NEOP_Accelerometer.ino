@@ -16,9 +16,9 @@ int smoothAmt = 15;
 int ledBrightness = 255;
 int ledBrightnessOffset = 10;
 int initialHue = 0;
-int endHue = 255;
+int endHue = 100;
 int motionOffsetHue = 40;
-float timelineSeconds = 4;
+float timelineSeconds = 60;
 
 
 Smoothed <float> smoothyX, smoothyY, smoothyZ, smoothDeltaX, smoothDeltaY, smoothDeltaZ, smoothMotion;

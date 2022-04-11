@@ -95,17 +95,18 @@ float lerp(float v0, float v1, float t)
   return (1 - t) * v0 + t * v1;
 }
 
-float Flerp(float v0, float v1, float t) {
+float flerp(float v0, float v1, float t) {
   return v0 + t * (v1 - v0);
 }
 
 float normalizedTimeline(int timeThreshold)
 {
-  Serial.print("normalized time: ");  
+//  Serial.print("normalized time: ");  
   timeThreshold *= 1000;
   int loopTime = (millis()) % (timeThreshold);
   float loopTimeFloat = loopTime;
   float timeThresholdFloat = timeThreshold;
   float normalizedTime = loopTimeFloat / timeThresholdFloat;
-  Serial.println(normalizedTime);
+  return normalizedTime;
+//  Serial.println(normalizedTime);
 }

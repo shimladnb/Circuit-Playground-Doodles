@@ -15,9 +15,10 @@ int counter;
 int smoothAmt = 15;
 int ledBrightness = 255;
 int ledBrightnessOffset = 10;
-int initialHue = 100;
+int initialHue = 0;
+int endHue = 255;
 int motionOffsetHue = 40;
-float timelineSeconds = 10;
+float timelineSeconds = 4;
 
 
 Smoothed <float> smoothyX, smoothyY, smoothyZ, smoothDeltaX, smoothDeltaY, smoothDeltaZ, smoothMotion;
@@ -35,7 +36,9 @@ void loop()
   prepAccels(false);
   //  setBrightnessWithButton(false);
   calculateDeltaVector();
-  normalizedTimeline(timelineSeconds);
+  
+  float normalizedTime = normalizedTimeline(timelineSeconds);
+  float lerpedHue = flerp(initialHue, endHue, normalizedTime); 
 
   float generalMotion = abs(deltaX + deltaY + deltaZ);
   smoothMotion.add(generalMotion);
@@ -47,8 +50,10 @@ void loop()
 
   for (int i = 0; i < 10; i++)
   {    
-    currentHue = initialHue + (generalMotion * motionOffsetHue);
+    currentHue = lerpedHue;
+    currentHue = currentHue + (generalMotion * motionOffsetHue);
     currentHue %= 255;
+    Serial.println(currentHue);
     setColorToPixel(i, CHSV(currentHue, 255, 255));
   }
 

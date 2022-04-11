@@ -90,11 +90,22 @@ void setColorToPixel(int pixel, const CRGB& rgb)
   CircuitPlayground.setPixelColor(pixel, rgb.r, rgb.b, rgb.g);
 }
 
-float lerp(float v0, float v1, float t) 
+float lerp(float v0, float v1, float t)
 {
   return (1 - t) * v0 + t * v1;
 }
 
 float Flerp(float v0, float v1, float t) {
   return v0 + t * (v1 - v0);
+}
+
+float normalizedTimeline(int timeThreshold)
+{
+  Serial.print("normalized time: ");  
+  timeThreshold *= 1000;
+  int loopTime = (millis()) % (timeThreshold);
+  float loopTimeFloat = loopTime;
+  float timeThresholdFloat = timeThreshold;
+  float normalizedTime = loopTimeFloat / timeThresholdFloat;
+  Serial.println(normalizedTime);
 }

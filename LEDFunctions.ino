@@ -108,7 +108,15 @@ float normalizedTimeline(int timeThreshold)
 {
 //  Serial.print("normalized time: ");  
   timeThreshold *= 1000;
-  int loopTime = constrain(millis(), 0, timeThreshold);
+  int loopTime;
+  if(shouldTimeLoop)
+  {
+    loopTime = millis() % timeThreshold;
+  }
+  else
+  {
+    loopTime = constrain(millis(), 0, timeThreshold);
+  }    
   float loopTimeFloat = loopTime;
   float timeThresholdFloat = timeThreshold;
   float normalizedTime = loopTimeFloat / timeThresholdFloat;

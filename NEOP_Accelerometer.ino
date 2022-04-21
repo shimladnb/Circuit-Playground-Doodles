@@ -20,7 +20,8 @@ int ledBrightnessOffset = 10;
 int initialHue = 0;
 int endHue = 100;
 int motionOffsetHue = 40;
-float timelineSeconds = 360;
+bool shouldTimeLoop = false;
+float timelineSeconds = 10;
 
 CHSV color1( 160, 128, 255);
 CHSV color2( 160, 128, 255);

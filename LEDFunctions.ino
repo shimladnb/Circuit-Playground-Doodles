@@ -99,6 +99,11 @@ float flerp(float v0, float v1, float t) {
   return v0 + t * (v1 - v0);
 }
 
+const CRGB& flerpRgb(const CRGB& rgbA, const CRGB& rgbB, float alpha)
+{
+  // ayyyyyyy;
+}
+
 float normalizedTimeline(int timeThreshold)
 {
 //  Serial.print("normalized time: ");  
@@ -109,4 +114,16 @@ float normalizedTimeline(int timeThreshold)
   float normalizedTime = loopTimeFloat / timeThresholdFloat;
   return normalizedTime;
 //  Serial.println(normalizedTime);
+}
+
+float setBrightnessToMotion()
+{
+  float generalMotion = abs(deltaX + deltaY + deltaZ);
+  smoothMotion.add(generalMotion);
+  generalMotion = smoothMotion.get();
+  generalMotion /= 32.0;
+  generalMotion = pow(generalMotion, motionCurve);
+  //  Serial.println(generalMotion * 100);
+  CircuitPlayground.setBrightness(constrain(ledBrightness * generalMotion + ledBrightnessOffset, 0, 255));
+  return generalMotion;
 }

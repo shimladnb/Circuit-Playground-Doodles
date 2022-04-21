@@ -12,14 +12,22 @@ static uint8_t currentHue;
 int counter;
 
 // CONTROL PARAMS
+bool motionChangesHue = false;
 int smoothAmt = 15;
+float motionCurve = 2;
 int ledBrightness = 255;
 int ledBrightnessOffset = 10;
 int initialHue = 0;
-int endHue = 255;
+int endHue = 100;
 int motionOffsetHue = 40;
-float timelineSeconds = 4;
+bool shouldTimeLoop = false;
+float timelineSeconds = 10;
 
+CHSV color1( 160, 128, 255);
+CHSV color2( 160, 128, 255);
+CHSV color3( 160, 128, 255);
+CHSV color4( 160, 128, 255);
+CHSV color5( 160, 128, 255);
 
 Smoothed <float> smoothyX, smoothyY, smoothyZ, smoothDeltaX, smoothDeltaY, smoothDeltaZ, smoothMotion;
 
@@ -34,26 +42,19 @@ void setup()
 void loop()
 {
   prepAccels(false);
-  //  setBrightnessWithButton(false);
   calculateDeltaVector();
+  float generalMotion = setBrightnessToMotion();
   
   float normalizedTime = normalizedTimeline(timelineSeconds);
-  float lerpedHue = flerp(initialHue, endHue, normalizedTime); 
-
-  float generalMotion = abs(deltaX + deltaY + deltaZ);
-  smoothMotion.add(generalMotion);
-  generalMotion = smoothMotion.get();
-  generalMotion /= 32.0;
-  generalMotion = pow(generalMotion, 2);
-  //  Serial.println(generalMotion * 100);
-  CircuitPlayground.setBrightness(constrain(ledBrightness * generalMotion + ledBrightnessOffset, 0, 255));
-
+  
   for (int i = 0; i < 10; i++)
-  {    
+  {
+    float lerpedHue = flerp(initialHue, endHue, normalizedTime);
     currentHue = lerpedHue;
-    currentHue = currentHue + (generalMotion * motionOffsetHue);
+    if (motionChangesHue)
+      currentHue = currentHue + (generalMotion * motionOffsetHue);      
     currentHue %= 255;
-    Serial.println(currentHue);
+//    Serial.println(currentHue);
     setColorToPixel(i, CHSV(currentHue, 255, 255));
   }
 

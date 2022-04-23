@@ -111,11 +111,11 @@ float normalizedTimeline(int timeThreshold)
   int loopTime;
   if(shouldTimeLoop)
   {
-    loopTime = millis() % timeThreshold;
+    loopTime = (millis() - (waitTime * 1000)) % timeThreshold;
   }
   else
   {
-    loopTime = constrain(millis(), 0, timeThreshold);
+    loopTime = constrain((millis() - (waitTime * 1000)), 0, timeThreshold);
   }    
   float loopTimeFloat = loopTime;
   float timeThresholdFloat = timeThreshold;

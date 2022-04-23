@@ -12,16 +12,17 @@ static uint8_t currentHue;
 int counter;
 
 // CONTROL PARAMS
-bool motionChangesHue = false;
+bool motionChangesHue = true;
 int smoothAmt = 15;
 float motionCurve = 2;
 int ledBrightness = 255;
 int ledBrightnessOffset = 10;
-int initialHue = 0;
-int endHue = 100;
-int motionOffsetHue = 40;
+int initialHue = 255;
+int endHue = 235;
+int motionOffsetHue = 5;
 bool shouldTimeLoop = false;
 float timelineSeconds = 10;
+int waitTime = 30;
 
 CHSV color1( 160, 128, 255);
 CHSV color2( 160, 128, 255);
@@ -37,6 +38,10 @@ void setup()
   CircuitPlayground.begin();
   startUpSmootheners();
   CircuitPlayground.setBrightness(ledBrightness);
+  setColorToPixel(1, CHSV(255, 255, 255));
+  delay(10);
+  setColorToPixel(1, CHSV(0, 0, 0));
+  delay(waitTime*1000);
 }
 
 void loop()

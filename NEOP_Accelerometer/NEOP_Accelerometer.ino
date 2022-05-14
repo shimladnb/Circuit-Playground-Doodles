@@ -4,6 +4,8 @@
 #include <FastLED.h>
 // https://github.com/FastLED/FastLED/wiki/Pixel-reference#chsv
 
+//  Hoi ik ben bas
+
 float X, Y, Z;
 float sine;
 float oldValX, oldValY, oldValZ;

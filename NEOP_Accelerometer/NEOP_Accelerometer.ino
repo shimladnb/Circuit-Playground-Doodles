@@ -12,13 +12,14 @@ static uint8_t currentHue;
 int counter;
 
 // CONTROL PARAMS
-bool motionChangesHue = true;
+
 int smoothAmt = 15;
 float motionCurve = 2;
 int ledBrightness = 255;
 int ledBrightnessOffset = 10;
 int initialHue = 255;
 int endHue = 235;
+bool motionChangesHue = true;
 int motionOffsetHue = 5;
 bool shouldTimeLoop = false;
 float timelineSeconds = 10;

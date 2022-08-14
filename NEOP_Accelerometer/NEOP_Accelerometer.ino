@@ -55,13 +55,15 @@ void loop()
   
   for (int i = 0; i < 10; i++)
   {
-    float lerpedHue = flerp(initialHue, endHue, normalizedTime);
-    currentHue = lerpedHue;
-    if (motionChangesHue)
-      currentHue = currentHue + (generalMotion * motionOffsetHue);      
-    currentHue %= 255;
+    float lerpRed = flerp(255, 0, normalizedTime);
+    float lerpBlue = flerp(0, 255, normalizedTime);
+//    currentHue = lerpedHue;
+//    if (motionChangesHue)
+//      currentHue = currentHue + (generalMotion * motionOffsetHue);      
+//    currentHue %= 255;
 //    Serial.println(currentHue);
-    setColorToPixel(i, CHSV(currentHue, 255, 255));
+//    setColorToPixel(i, CHSV(currentHue, 255, 255));
+    setColorToPixel(i, CRGB(lerpRed, 0, lerpBlue));
   }
 
   delay(10);

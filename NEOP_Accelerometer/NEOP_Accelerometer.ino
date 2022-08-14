@@ -63,7 +63,7 @@ void loop()
 //    currentHue %= 255;
 //    Serial.println(currentHue);
 //    setColorToPixel(i, CHSV(currentHue, 255, 255));
-    setColorToPixel(i, CRGB(lerpRed, 0, lerpBlue));
+    setColorToPixel(i, CRGB(lerpRed, lerpBlue, 0));
   }
 
   delay(10);

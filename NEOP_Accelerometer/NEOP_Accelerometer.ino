@@ -11,26 +11,30 @@ float deltaX, deltaY, deltaZ;
 static uint8_t currentHue;
 int counter;
 
+// COLORS
+  CRGB eagleYellow( 239, 167, 0 );
+  CRGB eagleTeal( 0, 75, 214);
+  CRGB iceIceBaby( 193, 221, 217);
+
 // CONTROL PARAMS
+CRGB initialRGB = eagleYellow;
+CRGB endRGB = eagleYellow;
 
 int smoothAmt = 15;
 float motionCurve = 2;
 
 int ledBrightness = 255;
-int ledBrightnessOffset = 10;
+int ledBrightnessOffset = 255;
 
 int initialHue = 255;
 int endHue = 235;
 
-CRGB initialRGB( 228, 145, 0 );
-CRGB endRGB( 0, 75, 214 );
-
-bool motionChangesHue = true;
+bool motionChangesHue = false;
 int motionOffsetHue = 5;
 
 bool shouldTimeLoop = false;
 float timelineSeconds = 10;
-int waitTime = 30;
+int waitTime = 0;
 
 Smoothed <float> smoothyX, smoothyY, smoothyZ, smoothDeltaX, smoothDeltaY, smoothDeltaZ, smoothMotion;
 

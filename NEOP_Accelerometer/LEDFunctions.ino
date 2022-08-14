@@ -87,7 +87,7 @@ void calculateDeltaVector()
 
 void setColorToPixel(int pixel, const CRGB& rgb)
 {
-  CircuitPlayground.setPixelColor(pixel, rgb.r, rgb.b, rgb.g);
+  CircuitPlayground.setPixelColor(pixel, rgb.r, rgb.g, rgb.b);
 }
 
 float lerp(float v0, float v1, float t)

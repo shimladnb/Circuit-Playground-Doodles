@@ -15,21 +15,22 @@ int counter;
 
 int smoothAmt = 15;
 float motionCurve = 2;
+
 int ledBrightness = 255;
 int ledBrightnessOffset = 10;
+
 int initialHue = 255;
 int endHue = 235;
+
+CRGB initialRGB( 228, 145, 0 );
+CRGB endRGB( 0, 75, 214 );
+
 bool motionChangesHue = true;
 int motionOffsetHue = 5;
+
 bool shouldTimeLoop = false;
 float timelineSeconds = 10;
 int waitTime = 30;
-
-CHSV color1( 160, 128, 255);
-CHSV color2( 160, 128, 255);
-CHSV color3( 160, 128, 255);
-CHSV color4( 160, 128, 255);
-CHSV color5( 160, 128, 255);
 
 Smoothed <float> smoothyX, smoothyY, smoothyZ, smoothDeltaX, smoothDeltaY, smoothDeltaZ, smoothMotion;
 
@@ -55,16 +56,22 @@ void loop()
   
   for (int i = 0; i < 10; i++)
   {
-    float lerpRed = flerp(255, 0, normalizedTime);
-    float lerpBlue = flerp(0, 255, normalizedTime);
-//    currentHue = lerpedHue;
+    float lerpRed = flerp(initialRGB.r, endRGB.r, normalizedTime);
+    float lerpGreen = flerp(initialRGB.g, endRGB.g, normalizedTime);
+    float lerpBlue = flerp(initialRGB.b, endRGB.b, normalizedTime);
+
+    setColorToPixel(i, CRGB(lerpRed, lerpGreen, lerpBlue));
+
+
+    //    currentHue = lerpedHue;
 //    if (motionChangesHue)
 //      currentHue = currentHue + (generalMotion * motionOffsetHue);      
 //    currentHue %= 255;
 //    Serial.println(currentHue);
 //    setColorToPixel(i, CHSV(currentHue, 255, 255));
 //    setColorToPixel(i, CRGB(lerpRed, lerpBlue, 0));
-    setColorToPixel(i, CRGB(0, 247, 35));
+//    setColorToPixel(i, CRGB(0, 74, 213));
+
   }
 
   delay(10);

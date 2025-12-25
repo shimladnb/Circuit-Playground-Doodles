@@ -135,3 +135,21 @@ float setBrightnessToMotion()
   CircuitPlayground.setBrightness(constrain(ledBrightness * generalMotion + ledBrightnessOffset, 0, 255));
   return generalMotion;
 }
+
+void SittingDownAnimation(float normalizedTime)
+{
+      if (normalizedTime < 0.95) 
+    {
+      for (int i = 0; i < (normalizedTime * 10); i++) 
+      {
+        setColorToPixel(i, green);
+      }
+    } 
+    else 
+    {
+      for (int i = 0; i < 10; i++) 
+      {
+        setColorToPixel(i, black);
+      }
+    }
+}

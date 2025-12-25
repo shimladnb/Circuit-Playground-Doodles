@@ -20,10 +20,12 @@ int counter;
   CRGB eagleYellow( 239, 167, 0 );
   CRGB eagleTeal( 0, 75, 214);
   CRGB iceIceBaby( 193, 221, 217);
+  CRGB red( 255, 37, 37);
+  CRGB green( 0, 233, 46 );
 
 // CONTROL PARAMS
-CRGB initialRGB = eagleYellow;
-CRGB endRGB = eagleYellow;
+ CRGB initialRGB = red;
+ CRGB endRGB = green;
 
 int smoothAmt = 15;
 float motionCurve = 2;
@@ -34,11 +36,11 @@ int ledBrightnessOffset = 255;
 int initialHue = 255;
 int endHue = 235;
 
-bool motionChangesHue = false;
+bool motionChangesHue = true;
 int motionOffsetHue = 5;
 
-bool shouldTimeLoop = false;
-float timelineSeconds = 10;
+bool shouldTimeLoop = true;
+float timelineSeconds = 1;
 int waitTime = 0;
 
 Smoothed <float> smoothyX, smoothyY, smoothyZ, smoothDeltaX, smoothDeltaY, smoothDeltaZ, smoothMotion;
@@ -59,10 +61,14 @@ void loop()
 {
   prepAccels(false);
   calculateDeltaVector();
+
+  // set brigthness of leds
   float generalMotion = setBrightnessToMotion();
-  
+
+  // get a normalized timeline progression 
   float normalizedTime = normalizedTimeline(timelineSeconds);
   
+  // for all the leds do: 
   for (int i = 0; i < 10; i++)
   {
     float lerpRed = flerp(initialRGB.r, endRGB.r, normalizedTime);
@@ -73,13 +79,13 @@ void loop()
 
 
     //    currentHue = lerpedHue;
-//    if (motionChangesHue)
-//      currentHue = currentHue + (generalMotion * motionOffsetHue);      
-//    currentHue %= 255;
-//    Serial.println(currentHue);
-//    setColorToPixel(i, CHSV(currentHue, 255, 255));
-//    setColorToPixel(i, CRGB(lerpRed, lerpBlue, 0));
-//    setColorToPixel(i, CRGB(0, 74, 213));
+  //  if (motionChangesHue)
+  //    currentHue = currentHue + (generalMotion * motionOffsetHue);      
+  //  currentHue %= 255;
+  //  Serial.println(currentHue);
+  //  setColorToPixel(i, CHSV(currentHue, 255, 255));
+  //  setColorToPixel(i, CRGB(lerpRed, lerpBlue, 0));
+  //  setColorToPixel(i, CRGB(0, 74, 213));
 
   }
 

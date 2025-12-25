@@ -22,19 +22,23 @@ bool movingState;
 CRGB eagleYellow(239, 167, 0);
 CRGB eagleTeal(0, 75, 214);
 CRGB iceIceBaby(193, 221, 217);
-CRGB red(255, 37, 37);
-CRGB green(0, 233, 46);
+CRGB red(255, 0, 0);
+CRGB green(0, 255, 0);
 CRGB black(0, 0, 0);
+CRGB resoGreen( 0, 238, 128);
+CRGB hotMagenta(238, 0, 184);
 
 // // CONTROL PARAMS
-CRGB initialRGB = red;
-CRGB endRGB = green;
+CRGB sittingColor = resoGreen;
+CRGB movingColor = hotMagenta;
+
+bool printSensors = false;
 
 int smoothAmt = 10;
-float motionCurve = 2;
+float motionCurve = 3;
 
-int ledBrightness = 255;
-int ledBrightnessOffset = 255;
+int ledBrightness = 0;
+int ledBrightnessOffset = 0;
 
 int initialHue = 150;
 int endHue = 42;
@@ -43,7 +47,7 @@ bool motionChangesHue = true;
 int motionOffsetHue = 5;
 
 bool shouldTimeLoop = true;
-float timelineSeconds = 1;
+float timelineSeconds = 10;
 int waitTime = 0;
 
 
@@ -63,7 +67,7 @@ void setup() {
 }
 
 void loop() {
-  prepAccels(false);
+  prepAccels(printSensors);
   calculateDeltaVector();
 
   // set brigthness of leds to motion
@@ -73,27 +77,33 @@ void loop() {
   float normalizedTime = normalizedTimeline(timelineSeconds);
 
 
-  if (deltaZ < 2.f) 
+  if (deltaZ < 1.f) 
   {
     sittingState = true;
+    movingState = false;
   }
+
   else
   {
     sittingState = false;
+    movingState = true;
   }
+    
 
   if (sittingState) 
   {
+    CircuitPlayground.clearPixels();
     SittingDownAnimation(normalizedTime);
-  } 
-  else 
-  {
-    for (int i = 0; i < 10; i++) 
-    {
-      setColorToPixel(i, red);
-    }
   }
+    
+  
+  if (movingState)
+    MovingAnimation();
+  
+    
+  
 
 
-  Serial.println(deltaZ);
+  //Serial.println(deltaZ);
+  
 }

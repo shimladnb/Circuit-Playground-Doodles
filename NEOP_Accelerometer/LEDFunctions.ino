@@ -124,16 +124,15 @@ float normalizedTimeline(int timeThreshold)
 //  Serial.println(normalizedTime);
 }
 
-float setBrightnessToMotion()
+void setBrightnessToMotion()
 {
   float generalMotion = abs(deltaX + deltaY + deltaZ);
   smoothMotion.add(generalMotion);
   generalMotion = smoothMotion.get();
   generalMotion /= 32.0;
   generalMotion = pow(generalMotion, motionCurve);
-  //  Serial.println(generalMotion * 100);
-  CircuitPlayground.setBrightness(constrain(ledBrightness * generalMotion + ledBrightnessOffset, 0, 255));
-  return generalMotion;
+  Serial.println(generalMotion);
+  CircuitPlayground.setBrightness(constrain((ledBrightness + generalMotion) * 255, 0, 255));
 }
 
 void SittingDownAnimation(float normalizedTime)
@@ -142,14 +141,20 @@ void SittingDownAnimation(float normalizedTime)
     {
       for (int i = 0; i < (normalizedTime * 10); i++) 
       {
-        setColorToPixel(i, green);
+        setColorToPixel(i, sittingColor);
       }
     } 
-    else 
+    else   // reset to black after chaser
+      CircuitPlayground.clearPixels();
+    CircuitPlayground.setBrightness(25);
+}
+
+void MovingAnimation()
+{
+  for (int i = 0; i < 10; i++) 
     {
-      for (int i = 0; i < 10; i++) 
-      {
-        setColorToPixel(i, black);
-      }
+      setColorToPixel(i, movingColor);
     }
+    setBrightnessToMotion();
+
 }

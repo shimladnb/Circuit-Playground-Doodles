@@ -1,3 +1,8 @@
+// install board:
+// https://learn.adafruit.com/adafruit-circuit-playground-express/set-up-arduino-ide
+
+
+
 #include <Adafruit_CircuitPlayground.h>
 // http://ermahgerd.info/Adafruit_CircuitPlayground/
 #include <Smoothed.h>
@@ -11,7 +16,7 @@ float deltaX, deltaY, deltaZ;
 static uint8_t currentHue;
 int counter;
 
-// COLORS
+// COLORS 
   CRGB eagleYellow( 239, 167, 0 );
   CRGB eagleTeal( 0, 75, 214);
   CRGB iceIceBaby( 193, 221, 217);

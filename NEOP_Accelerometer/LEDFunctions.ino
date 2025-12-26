@@ -12,14 +12,14 @@ void prepAccels(bool printShit) {
   Y = smoothyY.get();
   Z = smoothyZ.get();
 
-  if (printShit) {
-    Serial.print("X: ");
-    Serial.print(X);
-    Serial.print("  Y: ");
-    Serial.print(Y);
-    Serial.print("  Z: ");
-    Serial.println(Z);
-  }
+  // if (printShit) {
+  //   Serial.print("X: ");
+  //   Serial.print(X);
+  //   Serial.print("  Y: ");
+  //   Serial.print(Y);
+  //   Serial.print("  Z: ");
+  //   Serial.println(Z);
+  // }
 }
 
 void startUpSmootheners() {
@@ -34,10 +34,10 @@ void startUpSmootheners() {
   smoothMotion.begin(SMOOTHED_AVERAGE, smoothAmt);
 }
 
-void pulseBrightness(float pulseSpeed) {
+void pulseBrightness(float pulseSpeed, int pulseScale) {
   piTimer = ((millis() % 1000) / 1000.f) * 3.141;
-  sine = cos(piTimer * pulseSpeed);
-  sine = (sine * 0.5 + 0.5) * ledBrightness;
+  sine = sin(piTimer * pulseSpeed);
+  sine = (sine * 0.5 + 0.5) * pulseScale;
   //  Serial.println(sine);
   CircuitPlayground.setBrightness(constrain(sine, 0, 255));
 }
@@ -105,9 +105,9 @@ float normalizedTimeline(int timeThreshold, int timerMillis) {
   timeThreshold *= 1000;
   int loopTime;
   if (shouldTimeLoop) {
-    loopTime = (timerMillis - (waitTime * 1000)) % timeThreshold;
+    loopTime = (timerMillis) % timeThreshold;
   } else {
-    loopTime = constrain((timerMillis - (waitTime * 1000)), 0, timeThreshold);
+    loopTime = constrain((timerMillis), 0, timeThreshold);
   }
   float loopTimeFloat = loopTime;
   float timeThresholdFloat = timeThreshold;
@@ -123,25 +123,31 @@ void setBrightnessToMotion() {
   generalMotion = smoothMotion.get();
   generalMotion /= 32.0;
   generalMotion = pow(generalMotion, motionCurve);
-  Serial.print("GeneralMotion: ");
-  Serial.println(generalMotion);
+  // if (printSensors){
+  //   Serial.print("GeneralMotion: ");
+  //   Serial.println(generalMotion);
+  // }
   CircuitPlayground.setBrightness(constrain(((ledBrightness * generalMotion)) * 255, 0, 255));
 }
 
+
+
+
+
+
 void SittingDownAnimation(float normalizedTime) {
-  if (normalizedTime < 0.95) {
+  if (normalizedTime < 0.90) {
     for (int i = 0; i < (normalizedTime * 10); i++) {
+      // CRGB sittingPixel(flerp(sittingColor.r,eagleYellow.r,i/10.f),lerp(sittingColor.g,eagleYellow.g,i/10.f),lerp(sittingColor.b,eagleYellow.b,i/10.f));
       setColorToPixel(i, sittingColor);
-      // pulseBrightness(0.25);
+      CircuitPlayground.setBrightness(ledBrightness);
+      
     }
   } else {
-    setColorToAllPixels(eagleYellow);
-    // CircuitPlayground.setBrightness(255);
-    // CircuitPlayground.playTone(523,1000,true); 
-  }  // reset to black after chaser
-
-  CircuitPlayground.setBrightness(ledBrightness);
-  // pulseBrightness(1);
+    setColorToAllPixels(rewardColor);
+    pulseBrightness(4.f,255);
+    // CircuitPlayground.playTone(523,1000,true);
+  }
 }
 
 void MovingAnimation() {

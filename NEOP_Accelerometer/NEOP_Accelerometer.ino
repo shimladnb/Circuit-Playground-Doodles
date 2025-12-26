@@ -22,13 +22,15 @@ CRGB hotMagenta(238, 0, 184);
 ////////////  CONTROL PARAMS  ///////////////
 CRGB sittingColor = resoGreen;
 CRGB movingColor = hotMagenta;
-bool printSensors = false;
-int smoothAmt = 15;
-float motionCurve = 3;
+CRGB rewardColor = eagleYellow;
+bool printSensors = true;
+int smoothAmt = 10;
+float motionCurve = 4;
+float movementThresh = 1.5;
 bool shouldTimeLoop = true;
-float timelineSeconds = 11;
-int waitTime = 0;
+float timelineSeconds = 6;
 int ledBrightness = 30;
+
 
 ////////////  SYSVALS  ///////////////
 float X, Y, Z;
@@ -40,9 +42,11 @@ int counter;
 float piTimer;
 bool sittingState;
 bool movingState;
-Timer timer;
+Timer sittingTimer;
+Timer movingTimer;
 bool didThing1, didThing2;
 Smoothed<float> smoothyX, smoothyY, smoothyZ, smoothDeltaX, smoothDeltaY, smoothDeltaZ, smoothMotion;
+float elapsedMovingTime;
 
 void setup() {
   Serial.begin(9600);
@@ -51,8 +55,7 @@ void setup() {
   setColorToPixel(1, CHSV(255, 255, 255));
   delay(10);
   setColorToPixel(1, CHSV(0, 0, 0));
-  delay(waitTime * 1000);
-  timer.start();
+  sittingTimer.start();
   didThing1 = false;
   didThing2 = false;
 }
@@ -60,62 +63,72 @@ void setup() {
 void loop() {
   prepAccels(printSensors);
   calculateDeltaVector();
+  float normalizedTime = normalizedTimeline(timelineSeconds, sittingTimer.read());
+  elapsedMovingTime = (movingTimer.read() / 1000.f) / 60.f;
 
-  float normalizedTime = normalizedTimeline(timelineSeconds, timer.read());
-
-  if (deltaZ < 1.f) {
+  if (deltaZ < movementThresh) {
     sittingState = true;
     movingState = false;
   }
-
   else {
     sittingState = false;
     movingState = true;
   }
 
 
+  ////////////  SITTING STATE  ///////////////
   if (sittingState) {
     didThing2 = false;  // reset other thing
     if (!didThing1) {
       // ...DO THING ONE HERE ONCE
-      // setColorToAllPixels(sittingColor);
-      // delay(1000);
-      timer.stop();
-      timer.start();
-      // CircuitPlayground.clearPixels();
-      didThing1 = true;  // ONLY
+      movingTimer.pause();
+      sittingTimer.stop();
+      sittingTimer.start();
+      didThing1 = true;
     }
     CircuitPlayground.clearPixels();
     SittingDownAnimation(normalizedTime);
   }
 
-
+  ////////////  MOVING STATE  ///////////////
   if (movingState) {
-    didThing1 = false;  // reset other thing
+    didThing1 = false; 
     if (!didThing2) {
       // ...DO THING TWO HERE ONCE
-      didThing2 = true;  // ONLY
+      if (movingTimer.state() == STOPPED)
+        movingTimer.start();
+      if (movingTimer.state() == PAUSED)
+        movingTimer.resume();
+      didThing2 = true;
     }
     MovingAnimation();
   }
 
+  ////////////  BUTTONS  ///////////////
   if (CircuitPlayground.rightButton()) {
     if (ledBrightness > 10) {
       ledBrightness = ledBrightness - 1;
-      
     }
   }
 
   if (CircuitPlayground.leftButton()) {
     if (ledBrightness < 240) {
       ledBrightness = ledBrightness + 1;
-      
     }
   }
 
+  if (printSensors) {
+    Serial.print("sittingTimer: ");
+    Serial.println(sittingTimer.read());
+    Serial.print("movingTimer: ");
+    Serial.println(elapsedMovingTime);
+    Serial.print("DeltaZ: ");
+    Serial.println(deltaZ);
+    Serial.println(" ");
+    Serial.println(" ");
+    Serial.println(" ");
+    Serial.println(" ");
+  }
 
-  Serial.print("Timer: ");
-  Serial.println(timer.read());
-  Serial.print("DeltaZ: ");
-  Serial.println(deltaZ);
+  delay(10);
 }

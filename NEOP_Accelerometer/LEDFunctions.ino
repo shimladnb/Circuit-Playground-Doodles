@@ -132,24 +132,27 @@ void setBrightnessToMotion() {
 
 
 
-
-
-
+////////////  SITTING STATE  ///////////////
 void SittingDownAnimation(float normalizedTime) {
   if (normalizedTime < 0.90) {
     for (int i = 0; i < (normalizedTime * 10); i++) {
       // CRGB sittingPixel(flerp(sittingColor.r,eagleYellow.r,i/10.f),lerp(sittingColor.g,eagleYellow.g,i/10.f),lerp(sittingColor.b,eagleYellow.b,i/10.f));
       setColorToPixel(i, sittingColor);
       CircuitPlayground.setBrightness(ledBrightness);
-      
     }
   } else {
     setColorToAllPixels(rewardColor);
-    pulseBrightness(4.f,255);
-    // CircuitPlayground.playTone(523,1000,true);
+    pulseBrightness(timelineSeconds, 255);
+    if (playSounds) {
+      int melodyTime = 50;
+      CircuitPlayground.playTone(200, melodyTime, true);
+      CircuitPlayground.playTone(400, melodyTime, true);
+      CircuitPlayground.playTone(800, melodyTime, true);
+    }
   }
 }
 
+////////////  MOVING STATE  ///////////////
 void MovingAnimation() {
   for (int i = 0; i < 10; i++) {
     setColorToPixel(i, movingColor);

@@ -15,6 +15,7 @@ CRGB eagleTeal(0, 75, 214);
 CRGB iceIceBaby(193, 221, 217);
 CRGB red(255, 0, 0);
 CRGB green(0, 255, 0);
+CRGB limeGreen(0, 252, 3);
 CRGB black(0, 0, 0);
 CRGB resoGreen(0, 238, 128);
 CRGB hotMagenta(238, 0, 184);
@@ -22,14 +23,18 @@ CRGB hotMagenta(238, 0, 184);
 ////////////  CONTROL PARAMS  ///////////////
 CRGB sittingColor = resoGreen;
 CRGB movingColor = hotMagenta;
+CRGB walkCompleteColor = limeGreen;
 CRGB rewardColor = eagleYellow;
+
 bool printSensors = true;
 int smoothAmt = 10;
 float motionCurve = 4;
 float movementThresh = 1.5;
 bool shouldTimeLoop = true;
-float timelineSeconds = 6;
+float timelineSeconds = 8;
 int ledBrightness = 30;
+float walkMinutes = 30;
+bool playSounds = false;
 
 
 ////////////  SYSVALS  ///////////////
@@ -63,14 +68,18 @@ void setup() {
 void loop() {
   prepAccels(printSensors);
   calculateDeltaVector();
+
   float normalizedTime = normalizedTimeline(timelineSeconds, sittingTimer.read());
   elapsedMovingTime = (movingTimer.read() / 1000.f) / 60.f;
+
+  if (elapsedMovingTime > walkMinutes) {
+    movingColor = walkCompleteColor;
+  }
 
   if (deltaZ < movementThresh) {
     sittingState = true;
     movingState = false;
-  }
-  else {
+  } else {
     sittingState = false;
     movingState = true;
   }
@@ -92,13 +101,19 @@ void loop() {
 
   ////////////  MOVING STATE  ///////////////
   if (movingState) {
-    didThing1 = false; 
+    didThing1 = false;
     if (!didThing2) {
       // ...DO THING TWO HERE ONCE
       if (movingTimer.state() == STOPPED)
         movingTimer.start();
       if (movingTimer.state() == PAUSED)
         movingTimer.resume();
+      if (playSounds) {
+        int melodyTime = 50;
+        CircuitPlayground.playTone(800, melodyTime, true);
+        CircuitPlayground.playTone(400, melodyTime, true);
+        CircuitPlayground.playTone(200, melodyTime, true);
+      }
       didThing2 = true;
     }
     MovingAnimation();
@@ -110,7 +125,6 @@ void loop() {
       ledBrightness = ledBrightness - 1;
     }
   }
-
   if (CircuitPlayground.leftButton()) {
     if (ledBrightness < 240) {
       ledBrightness = ledBrightness + 1;
@@ -118,17 +132,21 @@ void loop() {
   }
 
   if (printSensors) {
-    Serial.print("sittingTimer: ");
-    Serial.println(sittingTimer.read());
-    Serial.print("movingTimer: ");
-    Serial.println(elapsedMovingTime);
-    Serial.print("DeltaZ: ");
-    Serial.println(deltaZ);
-    Serial.println(" ");
-    Serial.println(" ");
-    Serial.println(" ");
-    Serial.println(" ");
+    // Serial.print("sittingTimer: ");
+    // Serial.println(sittingTimer.read());
+    // Serial.print("movingTimer: ");
+    // Serial.println(elapsedMovingTime);
+    // Serial.print("DeltaZ: ");
+    // Serial.println(deltaZ);
+    // Serial.print("soundSensor: ");
+    // Serial.println(CircuitPlayground.temperature());
+    // Serial.println(" ");
+    // Serial.println(" ");
+    // Serial.println(" ");
+    // Serial.println(" ");
   }
 
-  delay(10);
+
+
+  // delay(10);
 }

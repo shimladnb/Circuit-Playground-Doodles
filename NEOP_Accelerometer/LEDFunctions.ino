@@ -104,18 +104,18 @@ const CRGB& flerpRgb(const CRGB& rgbA, const CRGB& rgbB, float alpha)
   // ayyyyyyy;
 }
 
-float normalizedTimeline(int timeThreshold)
+float normalizedTimeline(int timeThreshold, int timerMillis)
 {
 //  Serial.print("normalized time: ");  
   timeThreshold *= 1000;
   int loopTime;
   if(shouldTimeLoop)
   {
-    loopTime = (millis() - (waitTime * 1000)) % timeThreshold;
+    loopTime = (timerMillis - (waitTime * 1000)) % timeThreshold;
   }
   else
   {
-    loopTime = constrain((millis() - (waitTime * 1000)), 0, timeThreshold);
+    loopTime = constrain((timerMillis - (waitTime * 1000)), 0, timeThreshold);
   }    
   float loopTimeFloat = loopTime;
   float timeThresholdFloat = timeThreshold;

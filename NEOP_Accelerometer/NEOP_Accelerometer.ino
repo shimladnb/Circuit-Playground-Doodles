@@ -8,6 +8,9 @@
 #include <Smoothed.h>
 #include <FastLED.h>
 // https://github.com/FastLED/FastLED/wiki/Pixel-reference#chsv
+#include "Timer.h"
+// https://github.com/sstaub/Timer
+
 
 float X, Y, Z;
 float sine;
@@ -17,6 +20,8 @@ static uint8_t currentHue;
 int counter;
 bool sittingState;
 bool movingState;
+Timer timer;
+bool didThing1, didThing2;
 
 // COLORS
 CRGB eagleYellow(239, 167, 0);
@@ -25,7 +30,7 @@ CRGB iceIceBaby(193, 221, 217);
 CRGB red(255, 0, 0);
 CRGB green(0, 255, 0);
 CRGB black(0, 0, 0);
-CRGB resoGreen( 0, 238, 128);
+CRGB resoGreen(0, 238, 128);
 CRGB hotMagenta(238, 0, 184);
 
 // // CONTROL PARAMS
@@ -50,9 +55,6 @@ bool shouldTimeLoop = true;
 float timelineSeconds = 10;
 int waitTime = 0;
 
-
-
-
 Smoothed<float> smoothyX, smoothyY, smoothyZ, smoothDeltaX, smoothDeltaY, smoothDeltaZ, smoothMotion;
 
 void setup() {
@@ -64,6 +66,9 @@ void setup() {
   delay(10);
   setColorToPixel(1, CHSV(0, 0, 0));
   delay(waitTime * 1000);
+  timer.start();
+  didThing1 = false;
+  didThing2 = false;
 }
 
 void loop() {
@@ -74,36 +79,60 @@ void loop() {
   // float generalMotion = setBrightnessToMotion();
 
   // get a normalized timeline progression
-  float normalizedTime = normalizedTimeline(timelineSeconds);
 
 
-  if (deltaZ < 1.f) 
-  {
+  unsigned long millis;
+
+
+  // if (resetTime)
+  //   millis = millis() - millis();
+  // else
+  //   millis = (millis());
+
+
+  float normalizedTime = normalizedTimeline(timelineSeconds, timer.read());
+
+
+  if (deltaZ < 3.f) {
     sittingState = true;
     movingState = false;
   }
 
-  else
-  {
+  else {
+
     sittingState = false;
     movingState = true;
   }
-    
 
-  if (sittingState) 
-  {
+
+  if (sittingState) {
+    didThing2 = false;  // reset other thing
+    if (!didThing1) {
+      // ...DO THING ONE HERE ONCE
+      timer.stop();
+      timer.start();
+      didThing1 = true;  // ONLY
+    }
     CircuitPlayground.clearPixels();
     SittingDownAnimation(normalizedTime);
   }
-    
-  
-  if (movingState)
+
+
+  if (movingState) {
+    didThing1 = false;  // reset other thing
+    if (!didThing2) {
+      // ...DO THING TWO HERE ONCE
+
+      didThing2 = true;  // ONLY
+    }
     MovingAnimation();
-  
-    
-  
+  }
 
 
-  //Serial.println(deltaZ);
-  
+
+
+  Serial.print("Timer: ");
+  Serial.println(timer.read());
+  Serial.print("DeltaZ: ");
+  Serial.println(deltaZ);
 }
